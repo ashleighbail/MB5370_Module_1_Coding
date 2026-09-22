@@ -1,0 +1,211 @@
+---
+title: "Workshop 1"
+author: "Ashleigh Bail"
+format: html
+editor: visual
+---
+
+## 
+
+```{r}
+#| message: false
+#| warning: false
+options(repos = c(CRAN = "https://r-project.org"))
+# Execute workshop 1 R script
+
+source("../code/Module-1.R")
+
+library(tidyverse)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, colour = class))
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy, size = class))
+#> Warning: Using size for a discrete variable is not advised.
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy)) +
+facet_wrap(~ class, nrow = 2 )
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy)) +
+facet_grid(drv ~ cyl)
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy)) +
+facet_grid(. ~ cyl)
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, colour = drv))
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, colour = drv),
+    show.legend = FALSE)
+```
+
+```{r}
+ggplot(data = mpg) +
+geom_point(mapping = aes(x = displ, y = hwy)) +
+geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+To reduce duplications and make it more concise (thus easier for editing):
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() +
+  geom_smooth()
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point(mapping = aes(color = class)) +
+geom_smooth()
+```
+
+Small subset of the dataset (filter() function, more on that later):
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point(mapping = aes(color = class)) +
+geom_smooth(data = filter(mpg, class ==
+"subcompact"), se = FALSE )
+```
+
+**Plotting statistics**
+
+```{r}
+ggplot(data = diamonds) +
+geom_bar(mapping = aes(x = cut))
+```
+
+Each geom has a default stat, and each stat has a default geom:
+
+```{r}
+ggplot(data = diamonds) +
+  stat_count(mapping = aes(x = cut))
+```
+
+Overriding the defaults:
+
+```{r}
+demo <- tribble(
+  ~cut,            ~freq,
+  "Fair",          1610,
+  "Good",          4906,
+  "Very Good",     12082,
+  "Premium",       13791,
+  "Ideal",         21551,
+)
+demo
+```
+
+```{r}
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity"
+    )
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = stat(prop), group = 1 ))
+#> Warning: `stat(prop)` was deprecated in ggplot2 3.4.0.
+```
+
+```{r}
+ggplot(data = diamonds) +
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.min = min,
+    fun.max = max,
+    fun = median
+  )
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, colour = cut))
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+
+```{r}
+#To alter transparency (alpha)
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
+  geom_bar(alpha = 1 / 5 , position = "identity"
+)
+```
+
+```{r}
+#To colour the bar outlines with no fill color
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) +
+  geom_bar(fill = NA , position = "identity")
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+```
+
+```{r}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, fill = clarity), position =
+"dodge")
+```
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+
+**Template for making a ggplot2:**
+
+```{r}
+# ggplot(data = <DATA>) +
+#   <GEOM_FUNCTION>(
+#     mapping = aes(<MAPPINGS>),
+#     stat = <STAT>,
+#     position = <POSITION>
+# ) +
+# <FACET_FUNCTION>
+```
