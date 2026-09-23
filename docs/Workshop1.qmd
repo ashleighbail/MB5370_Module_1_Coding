@@ -209,3 +209,15 @@ ggplot(data = mpg) +
 # ) +
 # <FACET_FUNCTION>
 ```
+
+# **Workshop 4**
+
+```{r}
+# Load tidyverse and palmerpenguins libraries
+  library (tidyverse)
+  library(palmerpenguins)
+```
+
+```{r}
+# Create a ggplot scatter plot using the penguins dataset.
+```
